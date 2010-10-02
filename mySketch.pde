@@ -20,13 +20,14 @@ import processing.opengl.*;
 
 XlsReader reader;
 PFont font;
+char letter;
 
 float[] xPos = new float[23263]; 
 float[] yPos = new float[23263]; 
 String[] xoria = new String[23263]; 
 int count, randomCell, randomCell2;
 int radius=1;
-boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria,viewXoria01;
+boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria,viewXoria01, searchBool;
 int yLista = 13;  
 
 void setup ()
@@ -52,12 +53,13 @@ void setup ()
   }
 }
 
-float lonToX ( float lon ) {    return map( lon, 18, 30, 0, width ); }// convert a longitude value to screen space
+float lonToX ( float lon ) {    return map( lon, 17, 31, 0, width ); }// convert a longitude value to screen space
 float latToY ( float lat ){    return map( lat, 33, 43, 0, height );}// convert a latitude value to screen space
 
 void draw()  {
   randomCell = int(random(2,23062));  
   randomCell2 = int(random(2,23062));
+  if(searchBool)  search();
   if(viewDrawGreece)  drawGreece();
   if(lista)  lista();  
   if(viewStepByStepGreece)  stepByStepGreece();
@@ -72,6 +74,14 @@ void draw()  {
     ellipse(xPos[randomCell], yPos[randomCell], 9,9);
     enaXorio = false;    
   }
+}
+void search()  {
+//  searchXorio = 
+  for (int i = 0; i < 23062; i++) {
+    char c = xoria[i].charAt(0);
+    if(c == letter)  background(24);
+  };  
+  searchBool = false; 
 }
 
 void lista()  {
@@ -106,7 +116,6 @@ void drawGreece()  {
   for (int i = 0; i < 23262; i++) {
     ellipse(xPos[i], yPos[i], radius, radius);
   };  
-
 }
 void stepByStepGreece()  {
   noFill();
@@ -147,6 +156,11 @@ void keyPressed()  {
   if (key == '6') {
     viewXoria01 = !viewXoria01;
   }
+  if (key == '7') {
+    text("type", width/2, 10);
+    
+    searchBool = !searchBool;
+  }
   if (key == '+') {
     radius++;
   }
@@ -156,6 +170,10 @@ void keyPressed()  {
   if (key == '0') {
     background(0);
   }
+  if (key >= 'A' && key <= 'z') {
+    letter = key;
+  }
+  
 }
 
 
