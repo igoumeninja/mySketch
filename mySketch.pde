@@ -26,7 +26,7 @@ float[] yPos = new float[23263];
 String[] xoria = new String[23263]; 
 int count, randomCell, randomCell2;
 int radius=1;
-boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria;
+boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria,viewXoria01;
 int yLista = 13;  
 
 void setup ()
@@ -61,6 +61,7 @@ void draw()  {
   if(viewDrawGreece)  drawGreece();
   if(lista)  lista();  
   if(viewStepByStepGreece)  stepByStepGreece();
+  if(viewXoria01) xoria01();
   if  (enaXorio)  {
     fill(255,250);
     text(xoria[randomCell], mouseX, mouseY);
@@ -111,17 +112,20 @@ void stepByStepGreece()  {
   noFill();
   stroke(int(random(255)),int(random(255)),int(random(255)));
   ellipse(xPos[randomCell], yPos[randomCell], radius, radius);
-  
   if (viewXoria)  {
     noStroke();
-//    fill(0);
-//    rect(mouseX, mouseY, 400, -20);
     fill(255,2);
     text(xoria[randomCell], mouseX, mouseY);
     stroke(255,2);
     line(xPos[randomCell], yPos[randomCell],mouseX, mouseY);
   }
   
+}
+
+void xoria01()  {
+  fill(255);
+  text("0", xPos[randomCell], yPos[randomCell]);  
+  text("1", xPos[randomCell2], yPos[randomCell2]);    
 }
 
 void keyPressed()  {
@@ -139,6 +143,9 @@ void keyPressed()  {
   }
   if (key == '5') {
     lista = !lista;
+  }
+  if (key == '6') {
+    viewXoria01 = !viewXoria01;
   }
   if (key == '+') {
     radius++;
