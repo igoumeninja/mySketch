@@ -29,7 +29,7 @@ int count, randomCell, randomCell2;
 int radius=1;
 boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria,viewXoria01,searchBool,viewMouseInteraction;
 int yLista = 13;  
-float yPosRand  = 50;
+float yPosRand  = 13;
 
 void setup ()
 {
@@ -82,19 +82,19 @@ void draw()  {
   }
 }
 void mouseInteraction()  {
-  if  (yPosRand > height)  yPosRand = 30;
   fill(0,32);
   rect(-50, -50, width+100, height+100);
   fill(255);
   noFill();
   for (int i = 0; i < 23062; i++) {
     if(abs(xPos[i]-mouseX) < 2 && abs(yPos[i]-mouseY) < 2)  {
+      if  (yPosRand > height-13)  yPosRand = 13;      
       stroke(int(random(255)),int(random(255)),int(random(255)), 125);
-      curve(0,height, xPos[i], yPos[i], width - 150, yPosRand,  width - 250, yPosRand);          
-      text(xoria[i], width - 150, yPosRand); 
-      yPosRand = yPosRand + 20;
+      curve(0,height, xPos[i], yPos[i], width - 250, yPosRand,  width - 250, yPosRand);          
+      text(xoria[i], width - 250, yPosRand); 
+      yPosRand = yPosRand + 13;
     }
-    viewMouseInteraction = false;
+    //viewMouseInteraction = false;
   }  
 }
 
