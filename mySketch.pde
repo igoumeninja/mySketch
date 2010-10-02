@@ -6,8 +6,8 @@ Visualize 23262 Greek vilages data taken from
  
  * Import xls file with library
  http://bezier.de/processing/libs/xls/
- 
  * Mapping the values
+ * Mouse Interaction
  
  TODO
  * search tool
