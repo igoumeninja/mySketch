@@ -34,8 +34,8 @@ void setup() {
   "stream.twitter.com", 
   80, 
   "1/statuses/sample.json", 
-  "igoumeninja",
-  "1g0umen1nj@");
+  "username",
+  "password@");
   s.go();
 }
 
