@@ -1,30 +1,42 @@
 import processing.opengl.*;
 
-float[][] xControlPoints;
-float[][] yControlPoints;
-int controlPoints = 10;
-float xCount, yCount, xStep, yStep;
+int controlPoints = 50;
+float[][] xControlPoints = new float[controlPoints][controlPoints];
+float[][] yControlPoints = new float[controlPoints][controlPoints];
 
 void setup()  {
   size(600,600, OPENGL);
-  xStep = width/controlPoints;
-  yStep = height/controlPoints;  
+  frameRate(2);
+  float xStep = width/controlPoints;
+  float yStep = height/controlPoints;  
   background(0);
-  for (int i = 1; i < controlPoints-1; i++)  {
-    for (int j = 1; j < controlPoints-1; j++)  {
+  stroke(255);
+  fill(255);
+  noFill();
+  float xCount = 0, yCount = 0;  
+  for (int i = 0; i < controlPoints; i++)  {
+    for (int j = 0; j < controlPoints; j++)  {
       xControlPoints[i][j] = xCount;
       yControlPoints[i][j] = yCount;
       xCount = xCount + xStep;      
     }
-  }  
   xCount = 0;
   yCount = yCount + yStep;
+  }    
 }
 
 void draw()  {
+  for (int i = 0; i < controlPoints; i++)  {
+    beginShape();
+    for (int j = 0; j < controlPoints; j++)  {
+      curveVertex(xControlPoints[i][j], yControlPoints[i][j]);
+    }
+    endShape();
+  }  
   
 }
 
 void keyPressed()  {
-  
+
 }
+
