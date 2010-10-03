@@ -1,3 +1,11 @@
-This README file for processing git repository
+<2010-10-03 Sun 19:13>
 
-Aris Bezas Sat, 02 October 2010, 07:54PM
+Δημιουργία εφέ μέσου του οποίου θα αναπτύσσονται γραμμές (παράλληλες
+αρχικά) στην οθόνη. Αυτές οι γραμμές θα είναι καμπύλες που θα
+ελέγχονται απο σημεία ελέγχου xControlPoins[i][j] και
+yControlPoins[i][j]. 
+
+TODO
+*Connect each line with synth
+
+Aris Bezas Sun, 03 October 2010, 07:14PM 

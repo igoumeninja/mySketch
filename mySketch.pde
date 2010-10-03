@@ -1,11 +1,24 @@
-/*
-This is initial processing file like a template
+import processing.opengl.*;
 
-Aris Bezas Sat, 02 October 2010, 07:51PM
-*/
+float[][] xControlPoints;
+float[][] yControlPoints;
+int controlPoints = 10;
+float xCount, yCount, xStep, yStep;
 
 void setup()  {
-  
+  size(600,600, OPENGL);
+  xStep = width/controlPoints;
+  yStep = height/controlPoints;  
+  background(0);
+  for (int i = 1; i < controlPoints-1; i++)  {
+    for (int j = 1; j < controlPoints-1; j++)  {
+      xControlPoints[i][j] = xCount;
+      yControlPoints[i][j] = yCount;
+      xCount = xCount + xStep;      
+    }
+  }  
+  xCount = 0;
+  yCount = yCount + yStep;
 }
 
 void draw()  {
