@@ -17,7 +17,9 @@ Visualize 23262 Greek vilages data taken from
 
 import de.bezier.data.*;
 import processing.opengl.*;
+import processing.video.*;
 
+//MovieMaker mm;
 XlsReader reader;
 PFont font;
 char letter;
@@ -25,17 +27,24 @@ char letter;
 float[] xPos = new float[23263]; 
 float[] yPos = new float[23263]; 
 String[] xoria = new String[23263]; 
-int count, randomCell, randomCell2;
+int count, countImage,randomCell, randomCell2;
 int radius=1;
-boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria,viewXoria01,searchBool,viewMouseInteraction;
+boolean viewDrawGreece, viewStepByStepGreece, enaXorio,lista,viewXoria;
+boolean viewXoria01,searchBool,viewMouseInteraction;
+boolean makeVideo = false;
 int yLista = 13;  
 float yPosRand  = 13;
 
 void setup ()
 {
-  size(screen.width, screen.height, OPENGL);  
+  if (makeVideo)  {
+    size(680,500);
+  }  else  {
+    size(screen.width, screen.height);  
+  }
   background( 0 );
-  frameRate(500);
+  frameRate(24);
+  //mm = new MovieMaker(this, width, height, "GreekVillages.mov");  
   font = createFont("Georgia", 12);  //.ttf in data folder
   textFont(font, 12);       
   smooth();
@@ -62,6 +71,12 @@ float latToY ( float lat ){
 }// convert a latitude value to screen space
 
 void draw()  {
+  if (makeVideo)  {
+    save("GreekVillages-" + countImage + ".jpg");
+    countImage++;  
+  }
+  
+  //mm.addFrame();   
   randomCell = int(random(2,23062));  
   randomCell2 = int(random(2,23062));
   if(viewMouseInteraction)  mouseInteraction();  
@@ -81,7 +96,8 @@ void draw()  {
     enaXorio = false;    
   }
   fill(255, 12);
-  text("Aris Bezas® Igoumeninja 2010", width/2 - 110, height - 50);  
+  text("Aris Bezas® Igoumeninja 2010", width/2 - 110, height - 50); 
+
 }
 void mouseInteraction()  {
   fill(0,32);
@@ -145,6 +161,7 @@ void stepByStepGreece()  {
   noFill();
   stroke(int(random(255)),int(random(255)),int(random(255)));
   ellipse(xPos[randomCell], yPos[randomCell], radius, radius);
+  ellipse(xPos[randomCell2], yPos[randomCell2], radius, radius);  
   if (viewXoria)  {
     noStroke();
     fill(255,2);
@@ -196,7 +213,7 @@ void keyPressed()  {
   }
   if (key >= 'A' && key <= 'z') {
     letter = key;
-  }
+  }  
 }
 
 void mousePressed()  {
