@@ -1,3 +1,20 @@
-This README file for processing git repository
+Greek Villages Visualization
 
-Aris Bezas Sat, 02 October 2010, 07:54PM
+manual
+-------
+* press the same button to deactivate the effect
+
+keys  
+ 
+1 -> view Step By Step(village by village) Greece
+2 -> print one Village
+3 -> light effect
+4 -> print all villages dots
+5 -> random list effect
+6 -> mouse interaction press mouse to view village
+7 -> draw Greece with "0" and "1"
++ -> increase dot radius
+- -> reduce dot radius
+
+----------------------------------------
+Aris Bezas Mon, 04 October 2010, 11:08AM

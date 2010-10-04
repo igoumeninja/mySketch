@@ -80,6 +80,8 @@ void draw()  {
     ellipse(xPos[randomCell], yPos[randomCell], 9,9);
     enaXorio = false;    
   }
+  fill(255, 12);
+  text("Aris Bezas® Igoumeninja 2010", width/2 - 110, height - 50);  
 }
 void mouseInteraction()  {
   fill(0,32);
@@ -94,7 +96,7 @@ void mouseInteraction()  {
       text(xoria[i], width - 250, yPosRand); 
       yPosRand = yPosRand + 13;
     }
-    //viewMouseInteraction = false;
+    viewMouseInteraction = false;
   }  
 }
 
