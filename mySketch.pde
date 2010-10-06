@@ -7,6 +7,7 @@ import processing.opengl.*;
 import processing.serial.*;
 import cc.arduino.*;
 
+PFont font;
 Arduino arduino;
 int val;      // Data received from the serial port
 
@@ -17,6 +18,9 @@ void setup()  {
   for (int i = 0; i <= 13; i++)  {
     arduino.pinMode(i, Arduino.INPUT);
   }
+
+  font = createFont("Georgia", 12);  //.ttf in data folder
+  textFont(font, 18);       
   
 
   stroke(255);
@@ -26,7 +30,8 @@ void setup()  {
 }
 
 void draw()  {
-  background(0);  
+  background(0); 
+  text(arduino.analogRead(0), 100,100);  
   for (int i = 0; i <= 13; i++) {
     if (arduino.digitalRead(i) == Arduino.HIGH)  {
       // make things
