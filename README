@@ -1,7 +1,6 @@
-This README file for processing git repository
+avartsClass1 branch is a Processing sketch for interaction with Arduino.
+Is a simple intro tutorial working with StandardFirmata of Arduino and 
+arduino library in Processing.
 
-<2010-10-03 Sun 20:03> Edit master branch, add OPENGL library to
-template.
-
-------------------------------------------
-Aris Bezas Sat, 02 October 2010, 07:54PM
+----------------------------------------
+Aris Bezas Wed, 06 October 2010, 09:56AM

@@ -1,23 +1,49 @@
 /*
-This is initial processing file like a template
-
+Rotate line with potensiometer
 Aris Bezas Sat, 02 October 2010, 07:51PM
 */
 
 import processing.opengl.*;
+import processing.serial.*;
+import cc.arduino.*;
 
+Arduino arduino;
+int val;      // Data received from the serial port
 
 void setup()  {
   //size(screen.width, screen.height, OPENGL);  
   size(600,600, OPENGL);
-  background(0);
+  arduino = new Arduino(this, Arduino.list()[0], 57600);  
+  for (int i = 0; i <= 13; i++)  {
+    arduino.pinMode(i, Arduino.INPUT);
+  }
+  
+
   stroke(255);
   fill(255);
   noFill();
+
 }
 
 void draw()  {
+  background(0);  
+  for (int i = 0; i <= 13; i++) {
+    if (arduino.digitalRead(i) == Arduino.HIGH)  {
+      // make things
+    }  else  {
+      // make othe things
+    }
+  }
   
+  for (int i = 0; i <= 5; i++) {
+//    ellipse(280 + i * 30, 240, arduino.analogRead(i) / 16, arduino.analogRead(i) / 16);
+  }
+  println(arduino.analogRead(0));
+  translate(width/2, height/2);
+  rotate(map(arduino.analogRead(0), 0, 1023, 0, 2*PI));  
+  box(200);
+//  line(width/2, 0, width/2, height);
+  //
 }
 
 void keyPressed()  {
