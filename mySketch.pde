@@ -1,92 +1,89 @@
-/**
- * SqueezePast
- * A Voronoi Map created dynamically by a set of moving points
- * by Steven Kay http://www.openprocessing.org/visuals/?visualID=6417
- *
- */
- 
- 
-Random die=new Random();
-ArrayList points=new ArrayList();
-
+// Emergent Voronoi
+// based on an algorithm presented by Coates
+// Alasdair Turner 2010
+// http://www.openprocessing.org/visuals/?visualID=7571
+  
+PVector [] nodes;
+PVector [] particles;
+color [] colors;
+PVector [][] field;
+  
 void setup()
 {
-  size(600, 600);  // Size should be the first statement
-  noStroke();     // Set line drawing color to white
-  frameRate(30);
-  for (int i=0;i<20;i++) {
-    points.add(new Attractor());   
-  }
+  size(400,400);
+  colorMode(HSB);
+  smooth();
+  nodes = new PVector [10];
+  colors = new color [4000];
+  particles = new PVector [4000];
+  field = new PVector [width][height];
+  reset();
+  frameRate(64);
 }
- 
-float y = 100;
- 
-// The statements in draw() are executed until the
-// program is stopped. Each statement is executed in
-// sequence and after the last line is read, the first
-// line is executed again.
+  
 void draw()
 {
-  background(0);   // Set the background to black
-  fill(255);
-   
-  for (int x=0;x<600;x+=2) {
-    for (int y=0;y<600;y+=2) {
-      int nearest=0;
-      float closest=1000.0;
-      for (int p=0;p<20;p++) {
-        Attractor a=(Attractor)points.get(p);
-        float dist=a.distanceTo(x,y);
-        if (dist<closest) {
-          nearest=p;
-          closest=dist;
-        }
-      }
-      Attractor a=(Attractor)points.get(nearest);
-      //fill(a.r,a.g,a.b); // fill by color
-      fill(255-3*closest);
-      rect(x,y,2,2);
+  background(255);
+  noStroke();
+  fill(128);
+  for (int i = 0; i < nodes.length; i++) {
+    ellipse(nodes[i].x,nodes[i].y,20,20);
+  }
+  for (int i = 0; i < particles.length; i++) {
+    int x = round(particles[i].x);
+    int y = round(particles[i].y);
+    if (x > 0 && x < width && y > 0 && y < height) {
+      fill(colors[i]);
+      particles[i].add(field[x][y]);
+      ellipse(particles[i].x,particles[i].y,4,4);
     }
   }
-   
-  for (int i=0;i<20;i++) {
-    Attractor a=(Attractor)points.get(i);
-    a.move();
+}
+  
+void mousePressed()
+{
+  reset();
+}
+  
+void reset()
+{
+  background(0);
+  for (int i = 0; i < nodes.length; i++) {
+    nodes[i] = new PVector(random(0,width),random(0,height));
+  }
+  for (int i = 0; i < particles.length; i++) {
+    colors[i] = color(random(255),random(204),204);
+    particles[i] = new PVector(random(0,width),random(0,height));
+  }
+  // Although this is perhaps against the spirit of 
+  // an "emergent" voronoi pattern, I precalculate a 
+  // vector field to move the particles
+  // If I had a massively parallel computer, I would 
+  // be stricter, and let each particle determine its
+  // own distance from the nearest node.  But I don't!
+  for (int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++) {
+      int nearest_node = -1;
+      float nearest_dist = 0.0f;
+      int nnearest_node = -1;
+      float nnearest_dist = 0.0f;
+      field[x][y] = new PVector();
+      for (int i = 0; i < nodes.length; i++) {
+        float d = dist(x,y,nodes[i].x,nodes[i].y);
+        if (nearest_node == -1 || d < nearest_dist) {
+          nnearest_node = nearest_node;
+          nnearest_dist = nearest_dist;
+          nearest_node = i;
+          nearest_dist = d;
+        }
+        else if (nnearest_node == -1 || d < nnearest_dist) {
+          nnearest_node = i;
+          nnearest_dist = d;
+        }
+      }
+      field[x][y] = new PVector(x-nodes[nearest_node].x,y-nodes[nearest_node].y);
+      field[x][y].mult(0.1*(nnearest_dist-nearest_dist)/(nnearest_dist+nearest_dist));
+    }
   }
 }
 
- 
-class Attractor {
-   
-  public int x;
-  public int y;
-  public int dx;
-  public int dy;
-  public float r,g,b;
-   
-  public Attractor() {
-    this.x=die.nextInt(200);
-    this.y=die.nextInt(200);
-    this.dx=-2+die.nextInt(4);
-    this.dy=-2+die.nextInt(4);
-    this.r=(float)die.nextInt(255);
-    this.g=(float)die.nextInt(255);
-    this.b=(float)die.nextInt(255);
-  }
-   
-  public void move() {
-    // move with wrap-around
-    this.x+=this.dx;
-    if (this.x<0) this.x+=200;
-    if (this.x>200) this.x-=200;
-    this.y+=this.dy;
-    if (this.y<0) this.y+=200;
-    if (this.y>200) this.y-=200;
-  }
-   
-  public float distanceTo(int xx,int yy) {
-    // Euclidian Distance
-    return (float)Math.sqrt(Math.pow(xx-this.x,2)+Math.pow(yy-this.y,2));
-  }
-}
- 
