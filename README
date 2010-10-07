@@ -1,9 +1,7 @@
-This README file for processing git repository
+Voronoi - Delaunay study
 
-<2010-10-03 Sun 20:03> Edit master branch, add OPENGL library to
-template.
-
-<2010-10-06 Wed 10:30> Add PFont adn data forlder to template.
+Start from http://www.openprocessing.org/visuals/?visualID=6417
+other examples http://openprocessing.org/tools/search.php?q=voronoi
 
 ------------------------------------------
-Aris Bezas Sat, 02 October 2010, 07:54PM
+Aris Bezas Thu, 07 October 2010, 12:22PM
