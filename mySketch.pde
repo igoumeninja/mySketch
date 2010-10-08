@@ -1,89 +1,87 @@
-// Emergent Voronoi
-// based on an algorithm presented by Coates
-// Alasdair Turner 2010
-// http://www.openprocessing.org/visuals/?visualID=7571
-  
-PVector [] nodes;
-PVector [] particles;
-color [] colors;
-PVector [][] field;
-  
-void setup()
-{
-  size(400,400);
-  colorMode(HSB);
-  smooth();
-  nodes = new PVector [10];
-  colors = new color [4000];
-  particles = new PVector [4000];
-  field = new PVector [width][height];
-  reset();
-  frameRate(64);
-}
-  
-void draw()
-{
-  background(255);
-  noStroke();
-  fill(128);
-  for (int i = 0; i < nodes.length; i++) {
-    ellipse(nodes[i].x,nodes[i].y,20,20);
+//import processing.opengl.*;
+//import processing.video.*;
+
+// http://www.openprocessing.org/visuals/?visualID=6888
+
+Global global; //always create the global variable before using any of the default classes (created by Don)
+
+PApplet pg;
+//PGraphics pg;
+PFont font;
+//MovieMaker mm;
+
+boolean RENDERING = true;
+boolean RECORDING = false;
+boolean CLOCKING = true;
+boolean WORKING = true;
+
+int timer = 0;
+
+float rx = 0;
+float rz = 0;
+float trx = 0;
+float trz = 0;
+
+Particle[] particles = new Particle[30];
+Particle puller,pusher;
+Cloud cl;
+Delaunay de;
+Voronoi vo;
+
+boolean click = false;
+
+void setup(){
+  //initialize stage
+  size(500,500,P3D);
+  pg = this;
+  //pg = createGraphics(3000,3000,P3D);
+  pg.background(255);
+  //if(RECORDING){ frameRate(24); }
+  font = loadFont("ArialMT-18.vlw");
+  textFont(font,18);
+  textAlign(CENTER,CENTER);
+  //initialize global
+  global = new Global(pg.width,pg.height,pg.height);
+  global.init();
+  //initialize moviemaker
+  //if(RECORDING){ mm = new MovieMaker(pg,global.w,global.h,"mov.mov",24,MovieMaker.JPEG,MovieMaker.HIGH); }
+  //initialize sketch
+  for(int i=0;i<particles.length;i++){
+    particles[i] = new Particle(random(pg.width)-pg.width/2,random(pg.height)-pg.height/2,0,2,true);
   }
-  for (int i = 0; i < particles.length; i++) {
-    int x = round(particles[i].x);
-    int y = round(particles[i].y);
-    if (x > 0 && x < width && y > 0 && y < height) {
-      fill(colors[i]);
-      particles[i].add(field[x][y]);
-      ellipse(particles[i].x,particles[i].y,4,4);
-    }
-  }
-}
-  
-void mousePressed()
-{
-  reset();
-}
-  
-void reset()
-{
-  background(0);
-  for (int i = 0; i < nodes.length; i++) {
-    nodes[i] = new PVector(random(0,width),random(0,height));
-  }
-  for (int i = 0; i < particles.length; i++) {
-    colors[i] = color(random(255),random(204),204);
-    particles[i] = new PVector(random(0,width),random(0,height));
-  }
-  // Although this is perhaps against the spirit of 
-  // an "emergent" voronoi pattern, I precalculate a 
-  // vector field to move the particles
-  // If I had a massively parallel computer, I would 
-  // be stricter, and let each particle determine its
-  // own distance from the nearest node.  But I don't!
-  for (int x = 0; x < width; x++) {
-    for (int y = 0; y < height; y++) {
-      int nearest_node = -1;
-      float nearest_dist = 0.0f;
-      int nnearest_node = -1;
-      float nnearest_dist = 0.0f;
-      field[x][y] = new PVector();
-      for (int i = 0; i < nodes.length; i++) {
-        float d = dist(x,y,nodes[i].x,nodes[i].y);
-        if (nearest_node == -1 || d < nearest_dist) {
-          nnearest_node = nearest_node;
-          nnearest_dist = nearest_dist;
-          nearest_node = i;
-          nearest_dist = d;
-        }
-        else if (nnearest_node == -1 || d < nnearest_dist) {
-          nnearest_node = i;
-          nnearest_dist = d;
-        }
-      }
-      field[x][y] = new PVector(x-nodes[nearest_node].x,y-nodes[nearest_node].y);
-      field[x][y].mult(0.1*(nnearest_dist-nearest_dist)/(nnearest_dist+nearest_dist));
-    }
-  }
+  cl = new Cloud(particles);
+  de = new Delaunay(particles,global.circumscribed_face);
+  vo = new Voronoi(de);
 }
 
+void draw(){
+   render();
+}
+
+void render(){
+  rx += (trx-rx)*.05;
+  rz += (trz-rz)*.05;
+  if(RENDERING){
+    pg.background(200);
+    pg.pushMatrix();
+    pg.translate(global.w/2,global.h/2,0);
+    pg.rotateX(rx);
+    pg.rotateZ(rz);
+    pg.stroke(0,100);
+    pg.fill(255);
+    particles[0].move_to(pg.mouseX-global.w/2,pg.mouseY-global.h/2,0);
+    cl.wander();
+    cl.repel();
+    cl.step();
+    de.synchronize();
+    vo.synchronize();
+    vo.render();
+    cl.render();
+    pg.popMatrix();
+  }
+  if(CLOCKING&&frameCount%100==0){
+    println(100/((millis()-timer)/1000.0f));
+    timer = millis();
+  }
+  //if(RECORDING){ mm.addFrame(); }
+}
