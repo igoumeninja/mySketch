@@ -111,6 +111,10 @@ void mouseInteraction()  {
       curve(0,height, xPos[i], yPos[i], width - 250, yPosRand,  width - 250, yPosRand);          
       text(xoria[i], width - 250, yPosRand); 
       yPosRand = yPosRand + 13;
+      fill(255,0,0);
+      ellipse(xPos[i], yPos[i], 9,9); 
+      fill(255);
+      noFill();
     }
     viewMouseInteraction = false;
   }  
