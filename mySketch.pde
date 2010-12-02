@@ -1,49 +1,54 @@
-Kykloi k1, k2, k3, k4, k5, k6, k7, k8, k9; 
+/*
+  This program scans in a grayscale600x600 image, extracts the 
+  pixel color data, and draws this data on a grid of ellipses.
+  from: http://visiblevisible.org/teaching/setpixel/students/joseph_l/
+  Scanning color data from pixels
+  edit by Aris Bezas Thu, 02 December 2010, 13:35
+*/
 
-int prosimo = 1;
+int step = 15, radius = 1;
 
-void setup() { 
-	frameRate(20);
-  size(screen.width, screen.height); 
-  smooth(); 
-  // Inputs: x, y, speed
-  k1 = new Kykloi(0, 20, prosimo*5); 
-  k2 = new Kykloi(0, 50, prosimo*9); 
-  k3 = new Kykloi(0, 80, prosimo*3); 
-  k4 = new Kykloi(0, 110, prosimo*7); 
-  k5 = new Kykloi(0, 140, prosimo*2);   
-  k6 = new Kykloi(0, 170, prosimo*23);   
-  k7 = new Kykloi(0, 200, prosimo*6);   
-  k8 = new Kykloi(0, 230, prosimo*8);   
-  k9 = new Kykloi(0, 260, prosimo*12);     
-} 
-void draw() { 
-  background(0); 
-  k1.update();   
-  k2.update(); 
-  k3.update(); 
-  k4.update(); 
-  k5.update();   
-  k6.update(); 
-  k7.update(); 
-  k8.update(); 
-  k9.update();   
-} 
-
-void mousePressed()  {
+void setup()  {
+  size(600, 600);
+  background(0);
+  smooth();
 }
 
-class Kykloi { 
-  int x, y, s; 
-  Kykloi(int xpos, int ypos, int speed) { 
-    x = xpos; 
-    y = ypos;
-    s = speed; 
-  } 
-  void update() {
-    x = x + s; 
-    ellipse(x, y, 20, 20);
-    if (x>screen.width) x = 0;
-  } 
-} 
+void draw()  {} // draw void before mousePressed
+
+void mousePressed()  {
+ radius  = radius + 1;    // Radius incrementation
+ drawPicture();          // Call drawPicture void every timeyou press the mouse
+}
+
+void drawPicture()  {
+  int pixel_count = 0;
+  PImage face = loadImage("puma.jpg");    // load image
+  color pixcol;                          // variable fr pixel color
+  int facecol;
+
+  //allocate space to save the pixel information from the image
+  float[][] pixel_data = new float [600][600]; //600x600=360000
+
+  //scans through the image and saves the pixel data in an array
+  if(pixel_count < 359999)  {
+    for(int i=0;i<599;i++)  {              //scan each pixels on axis x
+      for(int j=0;j<599;j++)  {            //scan each pixels on axis y
+        pixcol = face.pixels[pixel_count];
+        pixel_data[i][j] = green(pixcol);
+        pixel_count++;
+      }
+      pixel_count++;
+    }
+  }
+
+  //applies the pixel data to the circles.
+  for(int i=0;i<599;i+=step)  {
+    for(int j=0;j<600;j+=step)    {
+      fill(pixel_data[j][i]);
+      ellipse(i,j,radius, radius);
+    } 
+  }
+}
+
 
