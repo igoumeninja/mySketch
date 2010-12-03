@@ -1,16 +1,14 @@
 /*
-This is initial processing file like a template
+Stylus-Fantasticus WebSite Development
 
-Aris Bezas Sat, 02 October 2010, 07:51PM
+Aris Bezas Fri, 03 December 2010, 21:46
 */
-
-import processing.opengl.*;
 
 PFont  font;
 
 void setup()  {
   //size(screen.width, screen.height, OPENGL);  
-  size(600,600, OPENGL);
+  size(600,600);
   font = createFont("Georgia", 12);  //.ttf in data folder
   textFont(font, 12);       
   
