@@ -21,6 +21,8 @@ void setup() {
   smooth(); 
   strokeWeight(2);
   background(0); 
+  println("Stylus Fantasticus");
+  println("Iannis Zannos, Omer Chatziserif, Aris Bezas, Dakis Trentos");
   k1 = new Kykloi(width/2, 20 + 0*ypsos, 0, 40);
     k1.colorize(#844800);
   k2 = new Kykloi(width/2, 20 + 1*ypsos, 0, 40);
@@ -122,7 +124,6 @@ void mousePressed()  {
     k16.s = int(random(30));
     k17.s = int(random(30));
     k18.s = int(random(30));
-    println("takis");
     start = true;
   }
   if (start == true){
