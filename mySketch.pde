@@ -11,6 +11,7 @@
 
 int step = 15, radius = 1;
 PFont fontA;
+PrintWriter output;
 
 void setup()  {
   size(600, 600);
@@ -19,6 +20,7 @@ void setup()  {
   fontA = loadFont("Serif-48.vlw");
   textAlign(CENTER);
   textFont(fontA, 12);
+  output = createWriter("positions.txt");
 
 }
 
@@ -56,8 +58,12 @@ void drawPicture()  {
       fill(pixel_data[j][i]);
       text(char(int(random(360))),i,j);  // Typography
       ellipse(i,j,radius, radius);
+      output.println(i+","+j+","+pixel_data[j][i]); // Write the coordinate to the file
     } 
   }
+  output.flush(); // Writes the remaining data to the file
+  output.close(); // Finishes the file
+  exit(); // Stops the program
 }
 
 
