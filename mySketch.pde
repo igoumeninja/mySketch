@@ -11,8 +11,8 @@ PFont  font;
 Particle[] particles;
 int numParticles = 10000;
 boolean lines = false;
-int w = 900;
-int h = 100;
+int w = 600;
+int h = 600;
 
 
 void setup()  {
@@ -39,7 +39,7 @@ void setup()  {
 }
 
 void draw()  {
-  fill(0, 10);
+  fill(0, 20);
   rect(0, 0, w, h);
   for(int i=0;i<numParticles;i++)
   {
@@ -85,16 +85,16 @@ class Particle
       vx += (tx - x) * k;
       vy += (ty - y) * k;
     }
-    vx += random(-1, 1);
-    vy += random(-1, 1);
+    vx += random(-2, 2);
+    vy += random(-2, 2);
     vy += .1;
     vx *= .95;
     vy *= .95;
     x += vx;
     y += vy;
-    if(x > w)
+    if(x > width)
     {
-      x = w;
+      x = width;
       vx *= -1;
     }
     if(x<0)
@@ -102,9 +102,9 @@ class Particle
       x = 0;
       vx *= -1;
     }
-    if(y > h)
+    if(y > height)
     {
-      y = h;
+      y = height;
       vy *= -1;
     }
     if(y < 0)
@@ -116,7 +116,7 @@ class Particle
   
   public void render()
   {
-    stroke(255, 128);
+    stroke(255, 255);
     if(lines)
     {
       line(x, y, x-vx, y-vy);
