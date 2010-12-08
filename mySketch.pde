@@ -3,15 +3,23 @@
   pixel color data, and draws this data on a grid of ellipses.
   from: http://visiblevisible.org/teaching/setpixel/students/joseph_l/
   Scanning color data from pixels
+  
   edit by Aris Bezas Thu, 02 December 2010, 13:35
+  * 101208 add typography visualization 
+  
 */
 
 int step = 15, radius = 1;
+PFont fontA;
 
 void setup()  {
   size(600, 600);
   background(0);
   smooth();
+  fontA = loadFont("Serif-48.vlw");
+  textAlign(CENTER);
+  textFont(fontA, 12);
+
 }
 
 void draw()  {} // draw void before mousePressed
@@ -46,6 +54,7 @@ void drawPicture()  {
   for(int i=0;i<599;i+=step)  {
     for(int j=0;j<600;j+=step)    {
       fill(pixel_data[j][i]);
+      text(char(int(random(360))),i,j);  // Typography
       ellipse(i,j,radius, radius);
     } 
   }
