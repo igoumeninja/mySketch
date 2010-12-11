@@ -1,131 +1,91 @@
-/*
-Particles study
-Class from http://www.bit-101.com/p5/particles/particles/applet/
-
-Aris Bezas Wed, 08 December 2010, 12:42
-*/
-
-import processing.opengl.*;
-
-PFont  font;
-Particle[] particles;
-int numParticles = 10000;
-boolean lines = false;
-int w = 600;
-int h = 600;
-
+// All Examples Written by Casey Reas and Ben Fry
+// from http://ejohn.org/apps/processing.js/examples/topics/bouncybubbles.html
+// unless otherwise stated.
+int numBalls = 352;
+float spring = 0.15;
+float gravity = 0.05;
+Ball[] balls = new Ball[numBalls];
 
 void setup()  {
-  //size(screen.width, screen.height, OPENGL);  
-  size(w,h, OPENGL);
-  font = createFont("Georgia", 12);  //.ttf in data folder
-  textFont(font, 12);       
-  
+  size(screen.width, screen.height);
+  frameRate(60);
+  noStroke();
+  smooth();
+  for (int i = 0; i < numBalls; i++) {
+    balls[i] = new Ball(random(width), random(height), random(2, 20), i, balls);
+  }
+}
+
+void draw() 
+{
   background(0);
-  stroke(255);
-  fill(255);
-  noFill();
-  
-  particles = new Particle[numParticles];
-  for(int i=0;i<numParticles;i++)
-  {
-    particles[i] = new Particle();
-    particles[i].x = random(w);
-    particles[i].y = random(h);
-    particles[i].vx = random(-1, 1);
-    particles[i].vy = random(-1, 1);
-  }
-
-}
-
-void draw()  {
-  fill(0, 20);
-  rect(0, 0, w, h);
-  for(int i=0;i<numParticles;i++)
-  {
-    particles[i].move();
-    particles[i].render();
-  }  
-  
-}
-void mousePressed()
-{
-  lines = !lines;
-  for(int i=0;i<numParticles;i++)
-  {
-    particles[i].lines = lines;
+  for (int i = 0; i < numBalls; i++) {
+    balls[i].collide();
+    balls[i].move();
+    balls[i].display();  
   }
 }
 
-void keyPressed()  {
+class Ball {
+  float x, y;
+  float diameter;
+  float vx = 0;
+  float vy = 0;
+  int id;
+  Ball[] others;
+ 
+  Ball(float xin, float yin, float din, int idin, Ball[] oin) {
+    x = xin;
+    y = yin;
+    diameter = din;
+    id = idin;
+    others = oin;
+  } 
   
-}
-class Particle
-{
-  public float x = 0;
-  public float y = 0;
-  public float vx = 0;
-  public float vy = 0;
-  public float k = .01;
-  public boolean lines = false;
-  
-  public void Particle()
-  {
+  void collide() {
+    for (int i = id + 1; i < numBalls; i++) {
+      float dx = others[i].x - x;
+      float dy = others[i].y - y;
+      float distance = sqrt(dx*dx + dy*dy);
+      float minDist = others[i].diameter/2 + diameter/2;
+      if (distance < minDist) { 
+        float angle = atan2(dy, dx);
+        float targetX = x + cos(angle) * minDist;
+        float targetY = y + sin(angle) * minDist;
+        float ax = (targetX - others[i].x) * spring;
+        float ay = (targetY - others[i].y) * spring;
+        vx -= ax;
+        vy -= ay;
+        others[i].vx += ax;
+        others[i].vy += ay;
+      }
+    }   
   }
   
-  public void move()
-  {
-    float dx = mouseX - x;
-    float dy = mouseY - y;
-    float dist = sqrt(dx*dx + dy*dy);
-    if(dist < 100)
-    {
-      float tx = mouseX - dx / dist * 20;
-      float ty = mouseY - dy / dist * 100;
-      vx += (tx - x) * k;
-      vy += (ty - y) * k;
-    }
-    vx += random(-2, 2);
-    vy += random(-2, 2);
-    vy += .1;
-    vx *= .95;
-    vy *= .95;
+  void move() {
+    vy += gravity;
     x += vx;
     y += vy;
-    if(x > width)
-    {
-      x = width;
-      vx *= -1;
+    if (x + diameter/2 > width) {
+      x = width - diameter/2;
+      vx += -0.9; 
     }
-    if(x<0)
-    {
-      x = 0;
-      vx *= -1;
+    else if (x - diameter/2 < 0) {
+      x = diameter/2;
+      vx *= -0.9;
     }
-    if(y > height)
-    {
-      y = height;
-      vy *= -1;
-    }
-    if(y < 0)
-    {
-      y = 0;
-      vy *= -1;
+    if (y + diameter/2 > height) {
+      y = height - diameter/2;
+      vy *= -0.9; 
+    } 
+    else if (y - diameter/2 < 0) {
+      y = diameter/2;
+      vy *= -0.9;
     }
   }
   
-  public void render()
-  {
-    stroke(255, 255);
-    if(lines)
-    {
-      line(x, y, x-vx, y-vy);
-    }
-    else
-    {
-      point(x, y);
-    }
+  void display() {
+    fill(255, 204);
+    ellipse(x, y, diameter, diameter);
   }
 }
-
-
