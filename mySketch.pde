@@ -3,9 +3,10 @@
 from http://processing.org/learning/topics/edgedetection.html
 for blur http://homepages.inf.ed.ac.uk/rbf/HIPR2/gsmooth.htm
 */
-//float[][] kernel = { { -1, -1, -1 },
-//                     { -1, 10,  -1 },
-//                     { -1, -1,  -1 } };
+float k =9;
+float[][] kernel = { { -1, -1, -1 },
+                     { -1, k,  -1 },
+                     { -1, -1,  -1 } };
 
 //float[][] kernel = { { -1, -1, -1, -1, -1 },
 //                     { -1, -1, -1, -1, -1 },
@@ -13,18 +14,24 @@ for blur http://homepages.inf.ed.ac.uk/rbf/HIPR2/gsmooth.htm
 //                     { -1, -1, -1, -1, -1 },                     
 //                     { -1, -1, -1, -1, -1 }};
 
-float[][] kernel = { { -1, -1, -1, -1, -1 },
-                     { -1, -1, -1, -1, -1 },
-                     { -1, -1, 9, -1, -1 },
-                     { -1, -1, -1, -1, -1 },                     
-                     { -1, -1, -1, -1, -1 }};
+//float[][] kernel = { { -1, -1, -1, -1, -1 },
+//                     { -1, -1, -1, -1, -1 },
+//                     { -1, -1, 9, -1, -1 },
+//                     { -1, -1, -1, -1, -1 },                     
+//                     { -1, -1, -1, -1, -1 }};
+
+//float[][] kernel = { { -1, -0.4, -0.7, -0.4, -1 },
+//                     { -1, -1, -1, -1, -1 },
+//                     { -1, -1, 9, -1, -1 },
+//                     { -1, -1, -1, -1, -1 },                     
+//                     { -1, -1, -1, -1, -1 }};
 
 PImage img,edgeImg;
 
 void setup()  {
   size(1200, 600); 
-  frameRate(24);
-  img = loadImage("image.png"); // Load the original image
+  frameRate(10);
+  img = loadImage("image2.png"); // Load the original image
   image(img, 0, 0); // Displays the image from point (0,0) 
   img.loadPixels();
 
@@ -33,6 +40,7 @@ void setup()  {
 }
 
 void draw()  {
+  kernel[1][1] = 8 +sin(frameCount);
   // Loop through every pixel in the image.
   for (int y = 1; y < img.height-1; y++) { // Skip top and bottom edges
     for (int x = 1; x < img.width-1; x++) { // Skip left and right edges
@@ -44,7 +52,7 @@ void draw()  {
           // Image is grayscale, red/green/blue are identical
           float val = red(img.pixels[pos]);
           // Multiply adjacent pixels based on the kernel values
-          sum += random(1)*kernel[ky+1][kx+1] * val;
+          sum += kernel[ky+1][kx+1] * val;
         }
       }
       // For this pixel in the new image, set the gray value
