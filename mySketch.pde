@@ -1,102 +1,36 @@
-PImage mandrake;
-int num = 330; //number of particles
-int mouseState = 0; //int for toggling gravity
-int keyState = 0; //int for toggling image reform
-int pixWidth = 3;
+float v = 1.0/15.0;
+float[][] kernel = { { v, v, v*2 },
+                     { v, v, v },
+                     { v, v, v } };
 
-Pix[][] pix = new Pix[num][num];
+size(1200, 600); 
 
-void setup(){
-mandrake = loadImage("kar.jpg");
-size(720, 468, P2D);
-noStroke();
-frameRate(25);
-for (int i=0; i<num; i+=pixWidth){
- for (int j=0; j<num; j+=pixWidth){
-   pix[i][j] = new Pix(i, j, random(-1, 1), random(1, 2), i, j, random(0.1, 0.5), pixWidth);
- }
+PImage img = loadImage("image.png"); // Load the original image
+image(img, 0, 0); // Displays the image from point (0,0) 
+img.loadPixels();
+
+// Create an opaque image of the same size as the original
+PImage edgeImg = createImage(img.width, img.height, RGB);
+
+// Loop through every pixel in the image.
+for (int y = 1; y < img.height-1; y++) { // Skip top and bottom edges
+  for (int x = 1; x < img.width-1; x++) { // Skip left and right edges
+    float sum = 0; // Kernel sum for this pixel
+    for (int ky = -1; ky <= 1; ky++) {
+      for (int kx = -1; kx <= 1; kx++) {
+        // Calculate the adjacent pixel for this kernel point
+        int pos = (y + ky)*img.width + (x + kx);
+        // Image is grayscale, red/green/blue are identical
+        float val = red(img.pixels[pos]);
+        // Multiply adjacent pixels based on the kernel values
+        sum += kernel[ky+1][kx+1] * val;
+      }
+    }
+    // For this pixel in the new image, set the gray value
+    // based on the sum from the kernel
+    edgeImg.pixels[y*img.width + x] = color(sum);
+  }
 }
-}
-
-void draw(){
-background(0);
-
-for(int i=0; i<num; i+=pixWidth){
- for(int j=0; j<num; j+=pixWidth){
-   color pixel = mandrake.get(i, j);
-   fill(pixel, 400);
-   pix[i][j].display();
-
-   if(keyState==1){
-     mouseState=0;
-     pix[i][j].reform();
-   }
-   else if(mouseState==1){
-     keyState=0;
-     pix[i][j].move();
-   }
- }
-}
-}
-
-void mousePressed(){
-keyState=0;
-mouseState+=1;
-if (mouseState>1){
- mouseState=0;
-}
-}
-
-void keyPressed(){
-if (key==32){
- keyState+=1;
- mouseState=0;
- if(keyState>1){
-   keyState=0;
- }
-}
-}
-
-class Pix{
-float x, y;
-float nx, ny;
-float ox, oy;
-float gravity;
-int w;
-int del=16;
-
-Pix(float _x, float _y, float _nx, float _ny, float _ox, float _oy, float _gravity, int _w){
- x = _x;
- y = _y;
- nx = _nx;
- ny = _ny;
- ox = _ox;
- oy = _oy;
- gravity = _gravity;
- w = _w;
-}
-
-void display(){
- noStroke();
- rectMode(CENTER);
- rect(x, y, w, w);
-}
-
-void move(){
- x = x+nx+gravity;
- y = y+ny+gravity;
-
- if(y>height || y<0){
-   ny = ny * -0.4;
- }
- if(x>width || x<0){
-   nx = nx * -0.4;
- }
-}
-
-void reform(){
- x+=(ox-x)/del;
- y+=(oy-y)/del;
-}
-}
-
+// State that there are changes to edgeImg.pixels[]
+edgeImg.updatePixels();
+image(edgeImg, 600, 0); // Draw the new image
