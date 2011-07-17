@@ -1,7 +1,11 @@
-float v = 1.0/15.0;
-float[][] kernel = { { v, v, v*2 },
-                     { v, v, v },
-                     { v, v, v } };
+/**
+
+from http://processing.org/learning/topics/edgedetection.html
+
+*/
+float[][] kernel = { { -1, -1, -1 },
+                     { -1, 10,  -1 },
+                     { -1, -1,  -1 } };
 
 size(1200, 600); 
 
