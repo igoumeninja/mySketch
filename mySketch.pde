@@ -1,46 +1,92 @@
-/*
-Template for OSC control
- 
- Aris Bezas Tue, 03 May 2011, 18:17
+/**
+ * oscP5plug by andreas schlegel
+ * example shows how to use the plug service with oscP5.
+ * the concept of the plug service is, that you can
+ * register methods in your sketch to which incoming 
+ * osc messages will be forwareded automatically without 
+ * having to parse them in the oscEvent method.
+ * that a look at the example below to get an understanding
+ * of how plug works.
+ * oscP5 website at http://www.sojamo.de/oscP5
  */
 
-import processing.opengl.*;
-import oscP5.*;  
+import oscP5.*;
 import netP5.*;
 
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-PFont  font;
-int varName;
-
 void setup() {
-  //size(screen.width, screen.height, OPENGL);  
-  size(600, 600, OPENGL);
-  font = createFont("Georgia", 12);  //.ttf in data folder
-  textFont(font, 12);       
-
-  background(0);
-  stroke(255);
-  fill(255);
-  noFill();
-
-  oscP5 = new OscP5(this, 12000);   //listening
-  myRemoteLocation = new NetAddress("127.0.0.1", 57120);  //  speak to
+  size(400,400);
+  frameRate(25);
+  /* start oscP5, listening for incoming messages at port 12000 */
+  oscP5 = new OscP5(this,12000);
   
-  // The method plug take 3 arguments. Wait for the <keyword>
-  oscP5.plug(this, "varName", "keyword");
+  /* myRemoteLocation is a NetAddress. a NetAddress takes 2 parameters,
+   * an ip address and a port number. myRemoteLocation is used as parameter in
+   * oscP5.send() when sending osc packets to another computer, device, 
+   * application. usage see below. for testing purposes the listening port
+   * and the port of the remote location address are the same, hence you will
+   * send messages back to this sketch.
+   */
+  myRemoteLocation = new NetAddress("127.0.0.1",57120);
+  
+  /* osc plug service
+   * osc messages with a specific address pattern can be automatically
+   * forwarded to a specific method of an object. in this example 
+   * a message with address pattern /test will be forwarded to a method
+   * test(). below the method test takes 2 arguments - 2 ints. therefore each
+   * message with address pattern /test and typetag ii will be forwarded to
+   * the method test(int theA, int theB)
+   */
+  oscP5.plug(this,"test","/test");
 }
+
+
+public void test(int theA, int theB) {
+  println("### plug event method. received a message /test.");
+  println(" 2 ints received: "+theA+", "+theB);  
+}
+
 
 void draw() {
-  OscMessage newMessage = new OscMessage("mouseX position");  
-  newMessage.add(mouseX); 
-  oscP5.send(newMessage, myRemoteLocation);
- 
-  println(varName);
+  background(0);
 }
 
-public void varName(int _varName) {
-  varName = _varName;
+
+void mousePressed() {
+  /* createan osc message with address pattern /test */
+  OscMessage myMessage = new OscMessage("/test");
+  
+  myMessage.add(123); /* add an int to the osc message */
+  myMessage.add(456); /* add a second int to the osc message */
+
+  /* send the message */
+  oscP5.send(myMessage, myRemoteLocation); 
 }
+
+
+/* incoming osc message are forwarded to the oscEvent method. */
+void oscEvent(OscMessage theOscMessage) {
+  /* with theOscMessage.isPlugged() you check if the osc message has already been
+   * forwarded to a plugged method. if theOscMessage.isPlugged()==true, it has already 
+   * been forwared to another method in your sketch. theOscMessage.isPlugged() can 
+   * be used for double posting but is not required.
+  */  
+  if(theOscMessage.isPlugged()==false) {
+  /* print the address pattern and the typetag of the received OscMessage */
+  println("### received an osc message.");
+  println("### addrpattern\t"+theOscMessage.addrPattern());
+  println("### typetag\t"+theOscMessage.typetag());
+  }
+}
+
+
+/*** SuperCollider Code
+
+OSCresponder(nil, "/test", { |t, r, msg| msg[0].postln;}).add; //Create a Responder
+n = NetAddr("127.0.0.1", 12000); // processing port
+n.sendMsg("/test", 1,2);	// send mesage to processing
+
+*/
 
